@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreMotion
 
 class ViewController: UIViewController {
 
@@ -14,7 +15,14 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        let manager = CMMotionManager()
+        if manager.isGyroAvailable {
+            manager.gyroUpdateInterval = 0.1
+            manager.startGyroUpdates()
+            
+            let queue = OperationQueue.main
+            
+        }
     }
 
     override func didReceiveMemoryWarning() {
