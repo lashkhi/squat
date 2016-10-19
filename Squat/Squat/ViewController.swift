@@ -12,17 +12,30 @@ import CoreMotion
 class ViewController: UIViewController {
 
     @IBOutlet weak var counterLabel: UILabel!
+    let manager = CMMotionManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let manager = CMMotionManager()
-        if manager.isGyroAvailable {
-            manager.gyroUpdateInterval = 0.1
-            manager.startGyroUpdates()
-            
-            let queue = OperationQueue.main
+        
+        if manager.isDeviceMotionAvailable {
+            manager.deviceMotionUpdateInterval = 0.1
+            let queue = OperationQueue()
+            manager.startDeviceMotionUpdates(to: queue, withHandler: {
+                (data: CMDeviceMotion?, error: Error?) in
+                if let acceleration = data?.userAcceleration {
+                    //NSLog("X:\(acceleration.x), Y:\(acceleration.y), Z:\(acceleration.z)")
+                }
+                if let gravity = data?.gravity {
+                    NSLog("X:\(gravity.x), Y:\(gravity.y), Z:\(gravity.z)")
+
+                }
+                
+            })
             
         }
+        
+        
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,7 +45,7 @@ class ViewController: UIViewController {
 
     
     func startCounting() {
-        
+
     }
 
 }
