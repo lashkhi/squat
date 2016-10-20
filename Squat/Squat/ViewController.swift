@@ -13,13 +13,32 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var counterLabel: UILabel!
     let manager = CMMotionManager()
+    let alimeter = CMAltimeter()
+    let activityManager = CMMotionActivityManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if manager.isDeviceMotionAvailable {
+        let queue = OperationQueue()
+        
+        if CMAltimeter.isRelativeAltitudeAvailable() {
+            alimeter.startRelativeAltitudeUpdates(to: queue, withHandler: {
+                [weak self](data: CMAltitudeData?, error: Error?) in
+                if let altitude = data?.relativeAltitude {
+                    self?.calculateRelativeAltitude(altitude: altitude)
+                }
+            })
+        }
+        
+        if CMMotionActivityManager.isActivityAvailable() {
+            activityManager.startActivityUpdates(to: queue, withHandler: {
+                (activityData: CMMotionActivity?) in
+                //
+            })
+        }
+        
+        /*if manager.isDeviceMotionAvailable {
             manager.deviceMotionUpdateInterval = 0.1
-            let queue = OperationQueue()
             manager.startDeviceMotionUpdates(to: queue, withHandler: {
                 (data: CMDeviceMotion?, error: Error?) in
                 if let acceleration = data?.userAcceleration {
@@ -32,7 +51,9 @@ class ViewController: UIViewController {
                 
             })
             
-        }
+            
+            
+        }*/
         
         
         
@@ -44,7 +65,8 @@ class ViewController: UIViewController {
     }
 
     
-    func startCounting() {
+    func calculateRelativeAltitude(altitude: NSNumber)  {
+        NSLog("\(altitude)")
 
     }
 
