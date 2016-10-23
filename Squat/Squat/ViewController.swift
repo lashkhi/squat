@@ -10,7 +10,7 @@ import UIKit
 import CoreMotion
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet weak var counterLabel: UILabel!
     let manager = CMMotionManager()
     var isCounting = false
@@ -25,22 +25,21 @@ class ViewController: UIViewController {
                 (data: CMDeviceMotion?, error: Error?) in
                 if let acceleration = data?.userAcceleration , let gravity = data?.gravity {
                     NSLog("Y:\(acceleration.y), Y Gravity:\(gravity.y)")
-                    self.detectSquat(acceleration: acceleration.y , gravity: gravity.y)
-
+                    self.detectSquat(acceleration: acceleration.y)
+                    
                 }
                 
             })
-            
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
     
-    func detectSquat(acceleration: Double, gravity: Double) {
+    
+    func detectSquat(acceleration: Double) {
         if acceleration > 0.15 && acceleration < 0.7 {
             if isCounting {
                 DispatchQueue.main.async {
@@ -53,6 +52,6 @@ class ViewController: UIViewController {
             else { isCounting = true }
         }
     }
-
+    
 }
 
