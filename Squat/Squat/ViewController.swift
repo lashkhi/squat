@@ -13,29 +13,25 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var counterLabel: UILabel!
     let manager = CMMotionManager()
+    var isCounting = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         if manager.isDeviceMotionAvailable {
-            manager.deviceMotionUpdateInterval = 0.1
+            manager.deviceMotionUpdateInterval = 0.5
             let queue = OperationQueue()
             manager.startDeviceMotionUpdates(to: queue, withHandler: {
                 (data: CMDeviceMotion?, error: Error?) in
-                if let acceleration = data?.userAcceleration {
-                    //NSLog("X:\(acceleration.x), Y:\(acceleration.y), Z:\(acceleration.z)")
-                }
-                if let gravity = data?.gravity {
-                    NSLog("X:\(gravity.x), Y:\(gravity.y), Z:\(gravity.z)")
+                if let acceleration = data?.userAcceleration , let gravity = data?.gravity {
+                    NSLog("Y:\(acceleration.y), Y Gravity:\(gravity.y)")
+                    self.detectSquat(acceleration: acceleration.y , gravity: gravity.y)
 
                 }
                 
             })
             
         }
-        
-        
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -44,8 +40,18 @@ class ViewController: UIViewController {
     }
 
     
-    func startCounting() {
-
+    func detectSquat(acceleration: Double, gravity: Double) {
+        if acceleration > 0.15 && acceleration < 0.7 {
+            if isCounting {
+                DispatchQueue.main.async {
+                    NSLog("COUNT")
+                    self.isCounting = false
+                    let counter = Int(self.counterLabel.text!)! + 1
+                    self.counterLabel.text = String(counter)
+                }
+            }
+            else { isCounting = true }
+        }
     }
 
 }
